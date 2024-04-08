@@ -13,8 +13,8 @@ import (
 // Follow this tutorial to setup a thing: https://www.youtube.com/watch?v=qAe2zYqvQTQ
 // Go to AWS IoT console >> MQTT test client to find the client ID and end point.
 const END_POINT = "ssl://apv3187879vov-ats.iot.us-east-2.amazonaws.com:8883"
-const CLIENT_ID = "iotconsole-e5e4ae47-d72b-424f-affd-457a4867236e"
-const CERT_NUM = "3f268854908188dc666e99ab648c0df62b3bd95919d3f6a2f5accb0b98d7e69b"
+const CLIENT_ID = "MacBook"
+const CERT_NUM = "f276f24e1c2349d00ac57437d72620740582856ed359a4b64d1f17f9a88b7063"
 const CMD_TOPIC = "topic/cmd"
 
 var CERT_DIR = "./cert/"
@@ -58,7 +58,7 @@ func main() {
 	defer client.Disconnect(250)
 
 	// Publish a message
-	token := client.Publish(CMD_TOPIC, 0, false, `{"cmd": "move backward"}`)
+	token := client.Publish(CMD_TOPIC, 0, false, `{"message": "Yo from GO"}`)
 	token.Wait()
 	print("Published!")
 
