@@ -102,6 +102,9 @@ func main() {
 			case "d":
 				token := client.Publish(CMD_TOPIC, 0, false, `{"message": "turn right"}`)
 				token.Wait()
+			case "x":
+				token := client.Publish(CMD_TOPIC, 0, false, `{"message": "stop"}`)
+				token.Wait()
 			default:
 				fmt.Println("Unknown command")
 			}
