@@ -21,7 +21,7 @@ const CERT_NUM = "f276f24e1c2349d00ac57437d72620740582856ed359a4b64d1f17f9a88b70
 const CMD_TOPIC = "topic/cmd"
 const SENSOR_TOPIC = "topic/sensor"
 
-var CERT_DIR = "./cert/"
+var CERT_DIR = "../cert/"
 var PATH_TO_ROOT = CERT_DIR + "AmazonRootCA1.pem"
 var PATH_TO_KEY = CERT_DIR + CERT_NUM + "-private.pem.key"
 var PATH_TO_CERT = CERT_DIR + CERT_NUM + "-certificate.pem.crt"
@@ -62,12 +62,12 @@ func main() {
 	}
 	defer client.Disconnect(250)
 
-	// Define the message handler
+	// Define the message handler when mqtt message arrives.
 	messageHandler := func(client mqtt.Client, msg mqtt.Message) {
-		fmt.Printf("Received message: %s from topic: %s\n", msg.Payload(), msg.Topic())
+		fmt.Printf("Received message: %s\n", msg.Payload())
 	}
 
-	// Subscribe routine.
+	// Subscribe to MQTT topic routine.
 	wg.Add(1)
 	go func() {
 		if token := client.Subscribe(SENSOR_TOPIC, 1, messageHandler); token.Wait() && token.Error() != nil {
@@ -77,7 +77,7 @@ func main() {
 		fmt.Println("Subscription successful")
 	}()
 
-	// Publish routine.
+	// Publish MQTT topic routine.
 	wg.Add(1)
 	reader := bufio.NewReader(os.Stdin)
 	go func() {
@@ -91,16 +91,16 @@ func main() {
 			}
 			switch cmd {
 			case "w":
-				token := client.Publish(CMD_TOPIC, 0, false, `{"message": "move forward"}`)
+				token := client.Publish(CMD_TOPIC, 0, false, `{"message": "forward"}`)
 				token.Wait()
 			case "s":
-				token := client.Publish(CMD_TOPIC, 0, false, `{"message": "move backward"}`)
+				token := client.Publish(CMD_TOPIC, 0, false, `{"message": "backward"}`)
 				token.Wait()
 			case "a":
-				token := client.Publish(CMD_TOPIC, 0, false, `{"message": "turn left"}`)
+				token := client.Publish(CMD_TOPIC, 0, false, `{"message": "left"}`)
 				token.Wait()
 			case "d":
-				token := client.Publish(CMD_TOPIC, 0, false, `{"message": "turn right"}`)
+				token := client.Publish(CMD_TOPIC, 0, false, `{"message": "right"}`)
 				token.Wait()
 			case "x":
 				token := client.Publish(CMD_TOPIC, 0, false, `{"message": "stop"}`)
