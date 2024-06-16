@@ -1,12 +1,78 @@
 version: '3.8'
 
 services:
-  mqtt-client-app:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper
+    restart: always
+
+  # Kafka broker
+  # 29092: This port is used to expose Kafka within the Docker network. 
+  # Containers in the same Docker Compose network can access Kafka using this port.
+  # 9092: This port is mapped to the host, allowing you to access Kafka from your host machine.
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    expose:
+      - '29092'
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: '1'
+      KAFKA_MIN_INSYNC_REPLICAS: '1'
+
+    volumes:
+      - kafka-data:/var/lib/kafka
+    restart: always
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
+  # Kafka init topic.
+  init-kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - kafka
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      # blocks until kafka is reachable
+      kafka-topics --bootstrap-server kafka:29092 --list
+
+      echo -e 'Creating kafka topics'
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topic-sensor --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic my-topic-2 --replication-factor 1 --partitions 1
+
+      echo -e 'Successfully created the following topics:'
+      kafka-topics --bootstrap-server kafka:29092 --list
+      "
+
+  # Run MqttKafka bridge app.
+  bridge-app:
     build: ./javaMqtt
-    container_name: mqtt-client-app
+    container_name: bridge-app
     ports:
       - "8080:8080"
     environment:
       - JAVA_HOME=/docker-java-home
+    depends_on:
+      - kafka
     # Run the application with the lib directory added to class path.
-    command: java -cp target/mqtt-client-app-1.0-SNAPSHOT.jar:lib/\* carPlatform.MqttKafkaBridge
+    command: java -cp target/bridge-app-1.0-SNAPSHOT.jar:target/lib/\* carPlatform.MqttKafkaBridge
+
+volumes:
+  zookeeper-data:
+  kafka-data:

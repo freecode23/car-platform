@@ -3,14 +3,44 @@
 https://medium.com/@kellerhalssamuel/simcom7600-and-aws-iot-core-integration-guide-ceb7ff485289
 
 
-# 2. To run java program :
-## Locally
-java -cp target/mqtt-client-app-1.0-SNAPSHOT.jar:lib/\* carPlatform.MqttKafkaBridge
+# 2. Run Kafka Locally
+Run zoo keeper:
+bin/zookeeper-server-start.sh config/zookeeper.properties
 
-## Docker
-docker build -t mqtt-client-app .
-docker run -it --rm mqtt-client-app
+Run kafka:
+bin/kafka-server-start.sh config/server.properties
 
+Create a kafka topic in kafka directory:
+bin/kafka-topics.sh --create --topic topic-sensor --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+
+Use the Kafka Console Consumer to Read Messages from the Topic
+bin/kafka-console-consumer.sh --topic topic-sensor --bootstrap-server localhost:9092 --from-beginning
+
+# 3. Run Java bridge program:
+## 3.1 Locally
+Note that if you just run bridge app locally without running kafka,
+it will not be able to pass message to kafka broker.
+java -cp target/bridge-app-1.0-SNAPSHOT.jar:target/lib/\* carPlatform.MqttKafkaBridge
+
+## 3.2 Docker 
+Build and run the container:
+docker build -t bridge-app .
+docker run -it --rm bridge-app
+
+Then run the app:
+java -cp target/bridge-app-1.0-SNAPSHOT.jar:target/lib/\* carPlatform.MqttKafkaBridge
+
+## 3.3 Docker compose
+docker compose up --build -d
+docker compose logs -f bridge-app
+docker compose logs -f kafka
+
+Check if Kafka receives the message:
+docker exec -it car_platform-kafka-1 /bin/sh
+kafka-console-consumer --bootstrap-server localhost:9092 --topic topic-sensor --from-beginning
+
+To clean up docker:
+docker system prune -a
 ## 4. To create java keystore
 https://github.com/aws/aws-iot-device-sdk-java
 
@@ -23,3 +53,5 @@ Use the password that we entered above here:
 ```
 keytool -importkeystore -srckeystore p12_keystore -srcstoretype PKCS12 -srcstorepass <password> -alias alias -deststorepass <password> -destkeypass <password> -destkeystore my_keystore
 ```
+
+

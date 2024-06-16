@@ -7,7 +7,7 @@ WORKDIR /app
 # Copy the project files to the working directory
 COPY pom.xml .
 COPY src ./src
-COPY lib ./lib
+COPY target ./target
 COPY cert ./cert
 
 # Build the project
@@ -20,9 +20,9 @@ FROM openjdk:11-jre-slim
 WORKDIR /app
 
 # Copy only these files in the final image.
-COPY --from=build /app/target/mqtt-client-app-1.0-SNAPSHOT.jar /app/target/mqtt-client-app-1.0-SNAPSHOT.jar
-COPY --from=build /app/src ./src
-COPY --from=build /app/lib ./lib
+# COPY --from=build /app/target/bridge-app-1.0-SNAPSHOT.jar /app/target/bridge-app-1.0-SNAPSHOT.jar
 COPY --from=build /app/cert/my_keystore ./cert/my_keystore
+COPY --from=build /app/src ./src
+COPY --from=build /app/target ./target
 
 
