@@ -7,6 +7,13 @@
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
+        <!-- AWS IoT Core dependency -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-iot-device-sdk-java</artifactId>
+            <version>1.3.9</version>
+        </dependency>
+
         <!-- MQTT dependency -->
         <dependency>
             <groupId>org.eclipse.paho</groupId>
@@ -16,7 +23,7 @@
     </dependencies>
 
     <build>
-        <sourceDirectory>src/main/java/carPlatform</sourceDirectory>
+        <sourceDirectory>src/main/carPlatform</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

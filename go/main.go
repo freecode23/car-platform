@@ -21,7 +21,7 @@ const CERT_NUM = "f276f24e1c2349d00ac57437d72620740582856ed359a4b64d1f17f9a88b70
 const CMD_TOPIC = "topic/cmd"
 const SENSOR_TOPIC = "topic/sensor"
 
-var CERT_DIR = "../cert/"
+var CERT_DIR = "./cert/"
 var PATH_TO_ROOT = CERT_DIR + "AmazonRootCA1.pem"
 var PATH_TO_KEY = CERT_DIR + CERT_NUM + "-private.pem.key"
 var PATH_TO_CERT = CERT_DIR + CERT_NUM + "-certificate.pem.crt"

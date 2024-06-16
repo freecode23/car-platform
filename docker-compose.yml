@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  mqtt-client-app:
+    build: ./javaMqtt
+    container_name: mqtt-client-app
+    ports:
+      - "8080:8080"
+    environment:
+      - JAVA_HOME=/docker-java-home
+    # Run the application with the lib directory added to class path.
+    command: java -cp target/mqtt-client-app-1.0-SNAPSHOT.jar:lib/\* carPlatform.MqttKafkaBridge
