@@ -20,7 +20,7 @@ bin/kafka-console-consumer.sh --topic topic-sensor --bootstrap-server localhost:
 ## 3.1 Locally
 Note that if you just run bridge app locally without running kafka,
 it will not be able to pass message to kafka broker.
-java -cp target/bridge-app-1.0-SNAPSHOT.jar:target/lib/\* carPlatform.MqttKafkaBridge
+java -cp target/bridge-app-1.0-SNAPSHOT.jar:target/lib/\* bridge.MqttKafkaBridge
 
 ## 3.2 Docker 
 Build and run the container:
@@ -28,7 +28,7 @@ docker build -t bridge-app .
 docker run -it --rm bridge-app
 
 Then run the app:
-java -cp target/bridge-app-1.0-SNAPSHOT.jar:target/lib/\* carPlatform.MqttKafkaBridge
+java -cp target/bridge-app-1.0-SNAPSHOT.jar:target/lib/\* bridge.MqttKafkaBridge
 
 
 # 4. Run just the processGPS app:

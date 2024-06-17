@@ -70,7 +70,7 @@ services:
     depends_on:
       - kafka
     # Run the application with the lib directory added to class path.
-    command: java -cp target/bridge-app-1.0-SNAPSHOT.jar:target/lib/\* carPlatform.MqttKafkaBridge
+    command: java -cp target/bridge-app-1.0-SNAPSHOT.jar:target/lib/\* bridge.MqttKafkaBridge
 
   gps-processing:
     build: ./gps_processing

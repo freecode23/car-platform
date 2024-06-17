@@ -44,7 +44,7 @@
 
 
     <build>
-        <sourceDirectory>src/main/carPlatform</sourceDirectory>
+        <sourceDirectory>src/main/bridge</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -64,7 +64,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>carPlatform.MqttKafkaBridge</mainClass>
+                            <mainClass>bridge.MqttKafkaBridge</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

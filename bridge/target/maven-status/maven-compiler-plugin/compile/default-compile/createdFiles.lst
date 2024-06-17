@@ -1,5 +1,0 @@
-carPlatform/SensorTopic.class
-carPlatform/MqttKafkaBridge.class
-carPlatform/SensorSubscriber.class
-carPlatform/CarMessage.class
-carPlatform/CommandPublisher.class
