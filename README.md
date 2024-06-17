@@ -39,8 +39,8 @@ docker run -it --rm go-consumer
 
 # 5. Run all using docker compose
 docker compose up --build -d
-docker compose logs -f bridge-app
-docker compose logs -f go-consumer
+docker compose logs -f bridge
+docker compose logs -f gps-processing
 
 Check if Kafka receives the message:
 docker exec -it car_platform-kafka-1 /bin/sh
