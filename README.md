@@ -16,7 +16,7 @@ bin/kafka-topics.sh --create --topic topic-sensor --bootstrap-server localhost:9
 Use the Kafka Console Consumer to Read Messages from the Topic
 bin/kafka-console-consumer.sh --topic topic-sensor --bootstrap-server localhost:9092 --from-beginning
 
-# 3. Run Java bridge program:
+# 3. Run just the Java bridge app:
 ## 3.1 Locally
 Note that if you just run bridge app locally without running kafka,
 it will not be able to pass message to kafka broker.
@@ -30,10 +30,17 @@ docker run -it --rm bridge-app
 Then run the app:
 java -cp target/bridge-app-1.0-SNAPSHOT.jar:target/lib/\* carPlatform.MqttKafkaBridge
 
-## 3.3 Docker compose
+
+# 4. Run just the processGPS app:
+Build and run the container:
+docker build -t go-consumer ./go 
+docker run -it --rm go-consumer
+
+
+# 5. Run all using docker compose
 docker compose up --build -d
 docker compose logs -f bridge-app
-docker compose logs -f kafka
+docker compose logs -f go-consumer
 
 Check if Kafka receives the message:
 docker exec -it car_platform-kafka-1 /bin/sh
@@ -41,7 +48,8 @@ kafka-console-consumer --bootstrap-server localhost:9092 --topic topic-sensor --
 
 To clean up docker:
 docker system prune -a
-## 4. To create java keystore
+
+# 5. To create java keystore
 https://github.com/aws/aws-iot-device-sdk-java
 
 In the directory where we keep the certifcate enter:
@@ -55,3 +63,4 @@ keytool -importkeystore -srckeystore p12_keystore -srcstoretype PKCS12 -srcstore
 ```
 
 
+<!-- sudo rm -rf ~/go/pkg/mod -->

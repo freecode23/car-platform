@@ -14,7 +14,7 @@ import com.amazonaws.services.iot.client.AWSIotQos;
 public class MqttKafkaBridge {
 
     // This should be the path from JVM dir, that is, the directory from which we invoke the java cmd.
-    // This will be from javaMqtt dir.
+    // This will be from javaBridge dir.
     private static final String CERT_DIR = "./cert/";
     private static final String BROKER_END_POINT = "apv3187879vov-ats.iot.us-east-2.amazonaws.com";
     private static final String CLIENT_ID = "MacBook";
