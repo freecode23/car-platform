@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-
+	//  Question: Works on local at localhost:9092 but not on docker with kafka:29092
 	consumer, err := sarama.NewConsumer([]string{"kafka:29092"}, sarama.NewConfig())
 	if err != nil {
 		panic(err)
