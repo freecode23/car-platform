@@ -3,7 +3,7 @@ package bridge;
 import com.amazonaws.services.iot.client.AWSIotMessage;
 import com.amazonaws.services.iot.client.AWSIotQos;
 
-public class CarMessage extends AWSIotMessage {
+public class CmdMqttMsg extends AWSIotMessage {
     
     /**
      * Constructor
@@ -11,7 +11,7 @@ public class CarMessage extends AWSIotMessage {
      * @param qos
      * @param payload
      */
-    public CarMessage(String topic, AWSIotQos qos, String payload) {
+    public CmdMqttMsg(String topic, AWSIotQos qos, String payload) {
         super(topic, qos, payload);
     }
 

@@ -7,17 +7,17 @@ import com.amazonaws.services.iot.client.AWSIotMessage;
 
 
 
-public class SensorSubscriber {
+public class SensorMqttSub {
 
     private AWSIotMqttClient client;
     private static final String SENSOR_TOPIC = "topic/sensor";
 
-    public SensorSubscriber(AWSIotMqttClient client) {
+    public SensorMqttSub(AWSIotMqttClient client) {
         this.client = client;
     }
 
     public void startSubscribing() {
-        SensorTopic topic = new SensorTopic(SENSOR_TOPIC, AWSIotQos.QOS0);
+        SensorMqttTopic topic = new SensorMqttTopic(SENSOR_TOPIC, AWSIotQos.QOS0);
         try {
             client.subscribe(topic);
         } catch (Exception e) {

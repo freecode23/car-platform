@@ -1,6 +1,5 @@
 package bridge;
 
-
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
@@ -11,7 +10,7 @@ import java.util.concurrent.Executors;
 import com.amazonaws.services.iot.client.AWSIotMqttClient;
 import com.amazonaws.services.iot.client.AWSIotQos;
 
-public class MqttKafkaBridge {
+public class Bridge {
 
     // This should be the path from JVM dir, that is, the directory from which we invoke the java cmd.
     // This will be from bridge dir.
@@ -23,7 +22,7 @@ public class MqttKafkaBridge {
     
 
     public static void main(String[] args) throws Exception {
-        MqttKafkaBridge bridge = new MqttKafkaBridge();
+        Bridge bridge = new Bridge();
         bridge.start();
     }
 
@@ -35,17 +34,19 @@ public class MqttKafkaBridge {
         AWSIotMqttClient client = new AWSIotMqttClient(BROKER_END_POINT, CLIENT_ID, keyStore, KEY_PASS);    
         client.connect();
 
-        // 2. Publish command to AWS
-        // TODO: This should come Rest API request instead of terminal command.
-        // CommandPublisher pub = new CommandPublisher(client);
-        // pub.startPublishing();
+        // 2. Command:
+        // Kafka consumer and Mqtt publisher to AWS
+        CmdMqttPub pub = new CmdMqttPub(client);
+        pub.publish();
 
-        // 3. Subscribe sensor topic from AWS
-        SensorSubscriber sub = new SensorSubscriber(client);
+        // 3. Sensor:
+        // Mqtt subscriber to AWS and Kafka producer
+        // This will create a sensor topic that has a callback function.
+        // When a msg is received on sensor topic, it will forward 
+        // messages to kafka broker.
+        SensorMqttSub sub = new SensorMqttSub(client);
         sub.startSubscribing();
 
-
-        // 4. TODO: Forward the subscribed message to kafka
     }
 
 }

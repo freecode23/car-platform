@@ -1,6 +1,5 @@
 package bridge;
 
-
 import com.amazonaws.services.iot.client.AWSIotQos;
 import com.amazonaws.services.iot.client.AWSIotTopic;
 import com.amazonaws.services.iot.client.AWSIotMessage;
@@ -14,14 +13,20 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-public class SensorTopic extends AWSIotTopic {
+public class SensorMqttTopic extends AWSIotTopic {
 
     private KafkaProducer<String, String> kafkaProducer;
     private String KAFKA_TOPIC;
-    public SensorTopic(String topic, AWSIotQos qos) {
+
+    /**
+     * Constructor will set up kafka producer that produce message for 
+     * the message received on a topic.
+     * @param topic
+     * @param qos
+     */
+    public SensorMqttTopic(String topic, AWSIotQos qos) {
         super(topic, qos);
         this.KAFKA_TOPIC = topic.replace("/", "-");
-
         setupKafkaProducer();
     }
 
@@ -32,7 +37,6 @@ public class SensorTopic extends AWSIotTopic {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:29092");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-
         kafkaProducer = new KafkaProducer<>(props);
     }
 

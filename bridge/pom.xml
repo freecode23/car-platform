@@ -64,7 +64,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>bridge.MqttKafkaBridge</mainClass>
+                            <mainClass>bridge.Bridge</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
