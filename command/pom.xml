@@ -31,7 +31,7 @@
 
 
     <build>
-        <sourceDirectory>src/main/gpsProcessing</sourceDirectory>
+        <sourceDirectory>src/main/command</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -51,7 +51,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>gpsProcessing.GpsProcessing</mainClass>
+                            <mainClass>command.Command</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

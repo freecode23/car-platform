@@ -41,7 +41,6 @@ public class CmdMqttPub {
     }
 
     private void setupKafkaConsumer() {
-
         Properties properties = new Properties();
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:29092");
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, "cmd-consumer-group");
@@ -54,6 +53,9 @@ public class CmdMqttPub {
 
 
     public void publish() {
+
+        // TODO: Replace the code below to only do something like
+        // kafkaClient.consume(callbackFunc) which will grab the kafka message and publish to mqtt in the callbackFUnc
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.submit(() -> {
 
