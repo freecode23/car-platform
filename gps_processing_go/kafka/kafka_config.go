@@ -3,7 +3,7 @@ package kafka
 import (
 	"fmt"
 	"log"
-	"os"
+	"time"
 
 	kafka "github.com/confluentinc/confluent-kafka-go/v2/kafka"
 )
@@ -25,50 +25,19 @@ func ListTopics() {
 	}
 }
 
-func StartKafka() {
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "kafka:29092"})
-	if err != nil {
-		panic(err)
-	}
-
-	defer p.Close()
-
-	// Delivery report handler for produced messages
-	go func() {
-		for e := range p.Events() {
-			switch ev := e.(type) {
-			case *kafka.Message:
-				if ev.TopicPartition.Error != nil {
-					fmt.Printf("Delivery failed: %v\n", ev.TopicPartition)
-				} else {
-					fmt.Printf("Delivered message to %v\n", ev.TopicPartition)
-				}
-			}
-		}
-	}()
-
-	// Produce messages to topic (asynchronously)
-	topic := "topic-cmd"
-	for _, word := range []string{"Welcome", "to", "the", "Confluent", "Kafka", "Golang", "client"} {
-		p.Produce(&kafka.Message{
-			TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
-			Value:          []byte(word),
-		}, nil)
-	}
-
-	// Wait for message deliveries before shutting down
-	p.Flush(15 * 1000)
+func CreateKafkaConsumer() {
 
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers": "kafka:29092",
-		"group.id":          "gps-consumer-group",
-		"auto.offset.reset": "smallest"})
-
+		"bootstrap.servers":        "kafka:29092",
+		"group.id":                 "gps-consumer-group-go",
+		"auto.offset.reset":        "latest",
+		"allow.auto.create.topics": true,
+	})
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("consumer=", consumer)
-	err = consumer.SubscribeTopics([]string{"topic-cmd"}, nil)
+	err = consumer.SubscribeTopics([]string{"topic-sensor"}, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -76,20 +45,17 @@ func StartKafka() {
 	// A signal handler or similar could be used to set this to false to break the loop.
 	run := true
 
-	for run == true {
-		ev := consumer.Poll(100)
-		switch e := ev.(type) {
-		case *kafka.Message:
-			// application-specific processing
-		case kafka.Error:
-			fmt.Fprintf(os.Stderr, "%% Error: %v\n", e)
-			run = false
-		default:
-			fmt.Printf("Ignored %v\n", e)
+	for run {
+		msg, err := consumer.ReadMessage(time.Second)
+		if err == nil {
+			fmt.Printf("Message on %s: %s\n", msg.TopicPartition, string(msg.Value))
+		} else if !err.(kafka.Error).IsTimeout() {
+			// The client will automatically try to recover from all errors.
+			// Timeout is not considered an error because it is raised by
+			// ReadMessage in absence of messages.
+			fmt.Printf("Consumer error: %v (%v)\n", err, msg)
 		}
 	}
-
-	consumer.Close()
 
 	consumer.Close()
 }

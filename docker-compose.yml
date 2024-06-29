@@ -57,8 +57,8 @@ services:
       kafka-topics --bootstrap-server kafka:29092 --list
 
       echo -e 'Creating kafka topics'
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topic-sensor --replication-factor 1 --partitions 1
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic my-topic-2 --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topic-sensor --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topic-cmd --replication-factor 1 --partitions 3
 
       echo -e 'Successfully created the following topics:'
       kafka-topics --bootstrap-server kafka:29092 --list
@@ -83,7 +83,8 @@ services:
     environment:
       - JAVA_HOME=/docker-java-home
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
     # Run the application with the lib directory added to class path.
     command: java -cp target/gps-processing-1.0-SNAPSHOT.jar:target/lib/\* gpsProcessing.GpsProcessing
 
@@ -93,7 +94,8 @@ services:
     ports:
       - "8082:8082"
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
     command: ["./gps_processing_go"]
 
   # command:

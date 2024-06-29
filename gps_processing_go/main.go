@@ -11,5 +11,5 @@ var Version string
 func main() {
 	fmt.Println("OK")
 	fmt.Println("App kafka started, version:", Version)
-	kafka.StartKafka()
+	kafka.CreateKafkaConsumer()
 }

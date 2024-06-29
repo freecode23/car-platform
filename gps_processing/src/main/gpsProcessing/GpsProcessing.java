@@ -15,7 +15,7 @@ public class GpsProcessing {
 
         // Create Kafka consumer that subscribe to a topic.
         String bootsrapServersConfig = "kafka:29092";
-        String consumerGroup = "gps-consumer-group";
+        String consumerGroup = "gps-consumer-group-java";
         String topicSubscribe = "topic-sensor";
         Properties properties = new Properties();
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootsrapServersConfig);
