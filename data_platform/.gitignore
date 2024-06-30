@@ -1,0 +1,62 @@
+# macOS system files
+.DS_Store
+
+# Visual Studio Code files
+.vscode/
+
+# AWS certificate
+cert/
+
+# Ignore target directories
+**/target/
+
+# Ignore IntelliJ IDEA project files
+*.iml
+.idea/
+
+# Ignore Eclipse project files
+.project
+.classpath
+.settings/
+
+# Ignore MacOS files
+.DS_Store
+
+# Ignore logs
+*.log
+
+# Ignore Maven dependencies
+**/dependency-reduced-pom.xml
+**/build/
+
+# Ignore temp files
+tmp/
+
+# Ignore Docker related files
+**/docker-compose.override.yml
+**/.dockerignore
+
+# Ignore OS generated files
+Thumbs.db
+.DS_Store
+
+# Ignore Java compiled class files
+*.class
+
+# Ignore generated JAR files
+*.jar
+*.war
+*.ear
+
+# Ignore logs
+*.log
+
+# Ignore binary files
+*.bin
+
+# Ignore Maven build directories
+target/
+
+# Ignore gradle files
+.gradle/
+build/
