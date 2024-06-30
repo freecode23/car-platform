@@ -51,7 +51,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>commandSender.CommandSender</mainClass>
+                            <mainClass>commandSender.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
