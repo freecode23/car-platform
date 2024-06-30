@@ -13,18 +13,9 @@ public class CommandSender {
     private String kafkaTopic;
     private KafkaProducer<String, String> kafkaProducer;
 
-    public CommandSender() {
-        // Get environment variables to set up Kafka producer
-        String bootstrapServers = System.getenv("KAFKA_BOOTSTRAP_SERVERS");
-        if (bootstrapServers == null) {
-            throw new IllegalStateException("KAFKA_BOOTSTRAP_SERVERS environment variable is not set");
-        }
+    public CommandSender(String bootstrapServers, String kafkaTopic) {
 
-        this.kafkaTopic = System.getenv("TOPIC_KAFKA_CMD");
-        if (kafkaTopic == null) {
-            throw new IllegalStateException("TOPIC_KAFKA_CMD environment variable is not set");
-        }
-
+        this.kafkaTopic = kafkaTopic;
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());

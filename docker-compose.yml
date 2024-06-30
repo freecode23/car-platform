@@ -97,8 +97,8 @@ services:
       kafka:
         condition: service_healthy
     # Run the application with the lib directory added to class path.
-    command: java -cp target/gps-processing-1.0-SNAPSHOT.jar:target/lib/\* gpsProcessing.GpsProcessing
-
+    command: java -cp target/gps-processing-1.0-SNAPSHOT.jar:target/lib/\* gpsProcessing.Main
+    
   command-sender:
     build: ./commandSender
     container_name: command-sender

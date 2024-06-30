@@ -51,7 +51,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>gpsProcessing.GpsProcessing</mainClass>
+                            <mainClass>gpsProcessing.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
