@@ -1,4 +1,11 @@
 version: '3.8'
+# Define common environment variables using an anchor
+x-common-variables: &common-variables
+  KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+  TOPIC_MQTT_SENSOR: topic/sensor
+  TOPIC_KAFKA_SENSOR: topic-sensor
+  TOPIC_MQTT_CMD: topic/cmd
+  TOPIC_KAFKA_CMD: topic-cmd
 
 services:
   zookeeper:
@@ -70,7 +77,8 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - JAVA_HOME=/docker-java-home
+      <<: *common-variables
+      JAVA_HOME: /docker-java-home
     depends_on:
       kafka:
         condition: service_healthy
@@ -83,7 +91,8 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - JAVA_HOME=/docker-java-home
+      <<: *common-variables
+      JAVA_HOME: /docker-java-home
     depends_on:
       kafka:
         condition: service_healthy
@@ -96,7 +105,8 @@ services:
     ports:
       - "8082:8082"
     environment:
-      - JAVA_HOME=/docker-java-home
+      <<: *common-variables
+      JAVA_HOME: /docker-java-home
     depends_on:
       kafka:
         condition: service_healthy

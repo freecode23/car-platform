@@ -4,14 +4,9 @@ import com.amazonaws.services.iot.client.AWSIotQos;
 import com.amazonaws.services.iot.client.AWSIotTopic;
 import com.amazonaws.services.iot.client.AWSIotMessage;
 
-import java.util.Properties;
-
-// Kafka
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
-import org.apache.kafka.common.serialization.StringSerializer;
 
 public class SensorMqttTopic extends AWSIotTopic {
 
@@ -24,20 +19,10 @@ public class SensorMqttTopic extends AWSIotTopic {
      * @param topic
      * @param qos
      */
-    public SensorMqttTopic(String topic, AWSIotQos qos) {
+    public SensorMqttTopic(String topic, AWSIotQos qos, KafkaProducer<String, String> kafkaProducer) {
         super(topic, qos);
         this.KAFKA_TOPIC = topic.replace("/", "-");
-        setupKafkaProducer();
-    }
-
-
-    private void setupKafkaProducer() {
-        Properties props = new Properties();
-        // Since the bridge-app is running as a Docker container within the same Docker Compose network, it should use the internal listener kafka:29092.
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:29092");
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        kafkaProducer = new KafkaProducer<>(props);
+        this.kafkaProducer = kafkaProducer;
     }
 
     @Override

@@ -13,13 +13,21 @@ import java.time.Duration;
 
 public class GpsProcessing {
     public static void main(String[] args) {
+        // Read environment variable
+        String bootstrapServers = System.getenv("KAFKA_BOOTSTRAP_SERVERS");
+        if (bootstrapServers == null) {
+            throw new IllegalStateException("KAFKA_BOOTSTRAP_SERVERS environment variable is not set");
+        }
+
+        String topicSubscribe = System.getenv("TOPIC_KAFKA_SENSOR");
+        if (topicSubscribe == null) {
+            throw new IllegalStateException("TOPIC_KAFKA_SENSOR environment variable is not set");
+        }
 
         // Create Kafka consumer that subscribe to a topic.
-        String bootsrapServersConfig = "kafka:29092";
         String consumerGroup = "gps-consumer-group-java";
-        String topicSubscribe = "topic-sensor";
         Properties properties = new Properties();
-        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootsrapServersConfig);
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroup);
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());

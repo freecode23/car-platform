@@ -9,18 +9,13 @@ import java.util.Properties;
 
 public class CommandSender {
 
-
     public static void main(String[] args) {
-        CommandSender commandSender = new CommandSender("kafka:29092");
+
+        CommandSender commandSender = new CommandSender();
         
         while (true) {
-
-            // Example: Send a "forward" command
             commandSender.sendCommand("w");
-            
-            // Example: Send a "backward" command
             commandSender.sendCommand("s");
-            // Pause for 3 seconds
             try {
                 Thread.sleep(3000); // 3000 milliseconds = 3 seconds
             } catch (InterruptedException e) {
@@ -32,10 +27,22 @@ public class CommandSender {
         // commandSender.close();
     }
 
-    private static final String KAFKA_TOPIC = "topic-cmd";
+    private String kafkaTopic;
     private KafkaProducer<String, String> kafkaProducer;
 
-    public CommandSender(String bootstrapServers) {
+    public CommandSender() {
+        // Get environment variables.
+        this.kafkaTopic = System.getenv("TOPIC_KAFKA_CMD");
+        if (kafkaTopic == null) {
+            throw new IllegalStateException("TOPIC_KAFKA_CMD environment variable is not set");
+        }
+
+        // Set up Kafka Producers.
+        String bootstrapServers = System.getenv("KAFKA_BOOTSTRAP_SERVERS");
+        if (bootstrapServers == null) {
+            throw new IllegalStateException("KAFKA_BOOTSTRAP_SERVERS environment variable is not set");
+        }
+
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
@@ -45,9 +52,8 @@ public class CommandSender {
     }
 
     public void sendCommand(String command) {
-        // String payload = String.format("{\"message\": \"%s\"}", command);
         String payload = command;
-        ProducerRecord<String, String> record = new ProducerRecord<>(KAFKA_TOPIC, payload);
+        ProducerRecord<String, String> record = new ProducerRecord<>(kafkaTopic, payload);
         System.out.println("Sending command: " + payload);
 
         kafkaProducer.send(record, (RecordMetadata metadata, Exception exception) -> {

@@ -4,9 +4,10 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.security.KeyStore;
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
+import org.apache.kafka.clients.producer.KafkaProducer;
 import com.amazonaws.services.iot.client.AWSIotMqttClient;
 import com.amazonaws.services.iot.client.AWSIotQos;
 
@@ -25,6 +26,7 @@ public class Bridge {
         Bridge bridge = new Bridge();
         bridge.start();
     }
+
 
     public void start() throws Exception {
 
@@ -48,5 +50,7 @@ public class Bridge {
         sub.startSubscribing();
 
     }
+
+
 
 }
