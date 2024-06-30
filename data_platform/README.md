@@ -1,5 +1,5 @@
 
-## 1. Set up AWS and load certificates to SIM module
+# 1. Set up AWS and load certificates to SIM module
 https://medium.com/@kellerhalssamuel/simcom7600-and-aws-iot-core-integration-guide-ceb7ff485289
 
 
@@ -48,7 +48,7 @@ kafka-console-consumer --bootstrap-server localhost:9092 --topic topic-sensor --
 To clean up docker:
 docker system prune -a
 
-# 5. To create java keystore
+# 6. To create java keystore
 https://github.com/aws/aws-iot-device-sdk-java
 
 In the directory where we keep the certifcate enter:
