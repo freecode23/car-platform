@@ -71,7 +71,8 @@ services:
     environment:
       - JAVA_HOME=/docker-java-home
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
     # Run the application with the lib directory added to class path.
     command: java -cp target/bridge-app-1.0-SNAPSHOT.jar:target/lib/\* bridge.Bridge
 
@@ -88,27 +89,29 @@ services:
     # Run the application with the lib directory added to class path.
     command: java -cp target/gps-processing-1.0-SNAPSHOT.jar:target/lib/\* gpsProcessing.GpsProcessing
 
-  gps-processing-go:
-    build: ./gps_processing_go
-    container_name: gps-processing-go
+  command-sender:
+    build: ./commandSender
+    container_name: command-sender
     ports:
       - "8082:8082"
+    environment:
+      - JAVA_HOME=/docker-java-home
     depends_on:
       kafka:
         condition: service_healthy
-    command: ["./gps_processing_go"]
+    # Run the application with the lib directory added to class path.
+    command: java -cp target/commandSender-1.0-SNAPSHOT.jar:target/lib/\* commandSender.CommandSender
 
-  # command:
-  #   build: ./command
-  #   container_name: command
+  # gps-processing-go:
+  #   build: ./gps_processing_go
+  #   container_name: gps-processing-go
   #   ports:
-  #     - "8082:8082"
-  #   environment:
-  #     - JAVA_HOME=/docker-java-home
+  #     - "8083:8083"
   #   depends_on:
-  #     - kafka
-  #   # Run the application with the lib directory added to class path.
-  #   command: java -cp target/command-1.0-SNAPSHOT.jar:target/lib/\* command.Command
+  #     kafka:
+  #       condition: service_healthy
+  #   command: ["./gps_processing_go"]
+
 volumes:
   zookeeper-data:
   kafka-data:

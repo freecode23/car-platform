@@ -26,7 +26,7 @@ public class CmdMqttPub {
 
     // Private fields
     private AWSIotMqttClient client;
-    private static final String CMD_TOPIC = "topic/cmd";
+    private static final String MQTT_CMD_TOPIC = "topic/cmd";
 
     private KafkaConsumer<String, String> consumerKafka;
     private String cmdMsgKafka;
@@ -89,7 +89,7 @@ public class CmdMqttPub {
     
                         // Publish
                         String payload = createPayload(cmdStrMqtt);
-                        CmdMqttMsg cmdMsgMqtt = new CmdMqttMsg(CMD_TOPIC, AWSIotQos.QOS0, payload);
+                        CmdMqttMsg cmdMsgMqtt = new CmdMqttMsg(MQTT_CMD_TOPIC, AWSIotQos.QOS0, payload);
                         client.publish(cmdMsgMqtt, 3000);
                     }
                 }
