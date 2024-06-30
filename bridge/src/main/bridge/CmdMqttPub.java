@@ -53,9 +53,6 @@ public class CmdMqttPub {
 
 
     public void publish() {
-
-        // TODO: Replace the code below to only do something like
-        // kafkaClient.consume(callbackFunc) which will grab the kafka message and publish to mqtt in the callbackFUnc
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.submit(() -> {
 

@@ -31,15 +31,14 @@ Then run the app:
 java -cp target/bridge-app-1.0-SNAPSHOT.jar:target/lib/\* bridge.Bridge
 
 
-# 4. Run just the processGPS app:
+# 4. Run just the gps-processing app app:
 Build and run the container:
-docker build -t go-consumer ./go 
-docker run -it --rm go-consumer
+docker compose up --build -t gps-processing-go
 
-
-# 5. Run all (kafka, bridge, gps_processing, command) using docker compose
+# 5. Run all (kafka, bridge, gps_processing, command-sender) using docker compose
 docker compose up --build -d
 docker compose logs -f bridge
+docker compose logs -f command-sender
 docker compose logs -f gps-processing
 
 Check if Kafka receives the message:
