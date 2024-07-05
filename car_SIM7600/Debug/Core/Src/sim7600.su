@@ -1,8 +1,0 @@
-../Core/Src/sim7600.c:55:6:sim_huart_init	24	static
-../Core/Src/sim7600.c:68:6:sim_mqtt_gps_init	2280	static
-../Core/Src/sim7600.c:155:6:sim_handle_byte	8	static
-../Core/Src/sim7600.c:193:6:sim_process_received_data	8	static
-../Core/Src/sim7600.c:242:13:send_AT_cmd	5024	static
-../Core/Src/sim7600.c:263:13:publish_mqtt_msg	312	dynamic
-../Core/Src/sim7600.c:292:13:extract_cmd	16	static
-../Core/Src/sim7600.c:327:13:extract_gpgga	8	static
