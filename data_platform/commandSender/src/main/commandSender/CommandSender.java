@@ -5,16 +5,20 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.PreDestroy;
 import java.util.Properties;
 
+@Service
 public class CommandSender {
 
-    private String kafkaTopic;
-    private KafkaProducer<String, String> kafkaProducer;
+    private final String kafkaTopic;
+    private final KafkaProducer<String, String> kafkaProducer;
 
-    public CommandSender(String bootstrapServers, String kafkaTopic) {
-
+    public CommandSender(@Value("${KAFKA_BOOTSTRAP_SERVERS:#{systemEnvironment['KAFKA_BOOTSTRAP_SERVERS']}}") String bootstrapServers,
+                         @Value("${TOPIC_KAFKA_CMD:#{systemEnvironment['TOPIC_KAFKA_CMD']}}") String kafkaTopic) {
         this.kafkaTopic = kafkaTopic;
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -39,6 +43,7 @@ public class CommandSender {
         });
     }
 
+    @PreDestroy
     public void close() {
         kafkaProducer.close();
     }

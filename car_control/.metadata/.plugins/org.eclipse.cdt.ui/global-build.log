@@ -1,11 +1,11 @@
-12:01:17 **** Incremental Build of configuration Debug for project car_control ****
+12:24:27 **** Incremental Build of configuration Debug for project car_control ****
 make -j7 all 
 arm-none-eabi-size  car_control.elf 
    text	   data	    bss	    dec	    hex	filename
   22764	    104	   3056	  25924	   6544	car_control.elf
 Finished building: default.size.stdout
  
-12:01:28 **** Incremental Build of configuration Debug for project car_control ****
+12:24:36 **** Incremental Build of configuration Debug for project car_control ****
 make -j7 all 
 arm-none-eabi-size  car_control.elf 
    text	   data	    bss	    dec	    hex	filename

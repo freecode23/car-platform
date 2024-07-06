@@ -35,19 +35,28 @@ public class CmdMqttPub {
     // Constructor
     public CmdMqttPub(AWSIotMqttClient client) {
         this.client = client;
-
-        // Set up Kafka consumer
         setupKafkaConsumer();
     }
 
     private void setupKafkaConsumer() {
+        // Read the KAFKA_BOOTSTRAP_SERVERS environment variable
+        String bootstrapServers = System.getenv("KAFKA_BOOTSTRAP_SERVERS");
+        if (bootstrapServers == null) {
+            throw new IllegalStateException("KAFKA_BOOTSTRAP_SERVERS environment variable is not set");
+        }
+
+        String topicKafkaCmd = System.getenv("TOPIC_KAFKA_CMD");
+        if (topicKafkaCmd == null) {
+            throw new IllegalStateException("TOPIC_KAFKA_CMD environment variable is not set");
+        }
+
         Properties properties = new Properties();
-        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:29092");
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, "cmd-consumer-group");
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         consumerKafka = new KafkaConsumer<>(properties);
-        consumerKafka.subscribe(Collections.singletonList("topic-cmd"));
+        consumerKafka.subscribe(Collections.singletonList(topicKafkaCmd));
 
     }
 

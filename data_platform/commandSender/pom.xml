@@ -5,8 +5,19 @@
     <groupId>car.platform</groupId>
     <artifactId>commandSender</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.6.6</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
 
     <dependencies>
+        <!-- Spring Boot Starter Web -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
 
         <!-- Kafka dependency -->
         <dependency>
@@ -32,6 +43,12 @@
 
     <build>
         <sourceDirectory>src/main/commandSender</sourceDirectory>
+        <!-- Spring boot resources -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -51,7 +68,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>commandSender.Main</mainClass>
+                            <mainClass>commandSender.CommandSenderApplication</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
