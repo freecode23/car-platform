@@ -1,0 +1,128 @@
+version: '3.8'
+# Define common environment variables using an anchor
+x-common-variables: &common-variables
+  KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+  TOPIC_MQTT_SENSOR: topic/sensor
+  TOPIC_KAFKA_SENSOR: topic-sensor
+  TOPIC_MQTT_CMD: topic/cmd
+  TOPIC_KAFKA_CMD: topic-cmd
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper
+    restart: always
+
+  # Kafka broker
+  # 29092: This port is used to expose Kafka within the Docker network. 
+  # Containers in the same Docker Compose network can access Kafka using this port.
+  # 9092: This port is mapped to the host, allowing you to access Kafka from your host machine.
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    expose:
+      - '29092'
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      ALLOW_PLAINTEXT_LISTENER: 'yes'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: '1'
+      KAFKA_MIN_INSYNC_REPLICAS: '1'
+    volumes:
+      - kafka-data:/var/lib/kafka
+    restart: always
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
+  # Kafka init topic.
+  init-kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - kafka
+    entrypoint: [ '/bin/sh', '-c' ]
+
+    # TODO: add env to take in kafka 29092
+    # environment:
+    # Run bash
+    command: |
+      "
+      # blocks until kafka is reachable
+      kafka-topics --bootstrap-server kafka:29092 --list
+
+      echo -e 'Creating kafka topics'
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topic-sensor --replication-factor 1 --partitions 3
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic topic-cmd --replication-factor 1 --partitions 3
+
+      echo -e 'Successfully created the following topics:'
+      kafka-topics --bootstrap-server kafka:29092 --list
+      "
+  
+  bridge:
+    build: ./bridge
+    container_name: bridge
+    ports:
+      - "8080:8080"
+    environment:
+      <<: *common-variables
+      JAVA_HOME: /docker-java-home
+    depends_on:
+      kafka:
+        condition: service_healthy
+    # Run the application with the lib directory added to class path.
+    command: java -cp target/bridge-app-1.0-SNAPSHOT.jar:target/lib/\* bridge.Bridge
+
+  gps-processing:
+    build: ./gpsProcessing
+    container_name: gps-processing
+    ports:
+      - "8081:8081"
+    environment:
+      <<: *common-variables
+      JAVA_HOME: /docker-java-home
+    depends_on:
+      kafka:
+        condition: service_healthy
+    # Run the application with the lib directory added to class path.
+    command: java -cp target/gpsProcessing-1.0-SNAPSHOT.jar:target/lib/\* gpsProcessing.Main
+    
+  command-sender:
+    build: ./commandSender
+    container_name: command-sender
+    ports:
+      - "8082:8082"
+    environment:
+      <<: *common-variables
+      JAVA_HOME: /docker-java-home
+    depends_on:
+      kafka:
+        condition: service_healthy
+    # Run the application with the lib directory added to class path.
+    command: java -cp target/commandSender-1.0-SNAPSHOT.jar:target/lib/\* commandSender.Main
+
+  # gps-processing-go:
+  #   build: ./gps_processing_go
+  #   container_name: gps-processing-go
+  #   ports:
+  #     - "8083:8083"
+  #   depends_on:
+  #     kafka:
+  #       condition: service_healthy
+  #   command: ["./gps_processing_go"]
+
+volumes:
+  zookeeper-data:
+  kafka-data:

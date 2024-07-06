@@ -16,18 +16,27 @@ public class Main {
             throw new IllegalStateException("TOPIC_KAFKA_CMD environment variable is not set");
         }
 
+        // Local run:
+        // String kafkaTopic = "topic/cmd";
+        // String bootstrapServers = "kafka:29092";
+
         CommandSender commandSender = new CommandSender(bootstrapServers, kafkaTopic);
         
         while (true) {
             // Example: Send a "forward" command
             commandSender.sendCommand("w");
             
-            // Example: Send a "backward" command
+            // Pause for 10 s
+            try {
+                Thread.sleep(10000); 
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             commandSender.sendCommand("s");
             
-            // Pause for 3 seconds
+            // Pause for 10 s
             try {
-                Thread.sleep(3000); // 3000 milliseconds = 3 seconds
+                Thread.sleep(10000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

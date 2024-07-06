@@ -2,6 +2,7 @@ package gpsProcessing;
 
 public class Main {
     public static void main(String[] args) {
+        // Docker run:
         // Read environment variable
         String bootstrapServers = System.getenv("KAFKA_BOOTSTRAP_SERVERS");
         if (bootstrapServers == null) {
@@ -12,6 +13,7 @@ public class Main {
         if (topicSubscribe == null) {
             throw new IllegalStateException("TOPIC_KAFKA_SENSOR environment variable is not set");
         }
+
 
         String consumerGroup = "gps-consumer-group-java";
 
