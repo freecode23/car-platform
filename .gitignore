@@ -3,3 +3,6 @@
 
 # Visual Studio Code files
 .vscode/
+
+# STM32 IDE
+.metadata/
