@@ -1,9 +1,9 @@
 
-# 1. Set up AWS and load certificates to SIM module
+## 1. Set up AWS and load certificates to SIM module
 https://medium.com/@kellerhalssamuel/simcom7600-and-aws-iot-core-integration-guide-ceb7ff485289
 
 
-# 2. Run Kafka Locally
+## 2. Run Kafka Locally
 Run zoo keeper:
 ```
 bin/zookeeper-server-start.sh config/zookeeper.properties
@@ -24,13 +24,13 @@ Use the Kafka Console Consumer to Read Messages from the Topic
 bin/kafka-console-consumer.sh --topic topic-sensor --bootstrap-server localhost:9092 --from-beginning
 ```
 
-# 3. Run just the Java bridge app:
-## 3.1 Locally
+## 3. Run just the Java bridge app:
+### 3.1 Locally
 Note that if you just run bridge app locally without running kafka,
 it will not be able to pass message to kafka broker.
 java -cp target/bridge-app-1.0-SNAPSHOT.jar:target/lib/\* bridge.Bridge
 
-## 3.2 Docker 
+### 3.2 Docker 
 Build and run the container:
 ```
 docker build -t bridge-app .
@@ -42,11 +42,11 @@ Then run the app:
 java -cp target/bridge-app-1.0-SNAPSHOT.jar:target/lib/\* bridge.Bridge
 ```
 
-# 4. Run just the gps-processing app app:
+## 4. Run just the gps-processing app app:
 Build and run the container:
 docker compose up --build -t gps-processing-go
 
-# 5. Run all (kafka, bridge, gps_processing, command-sender) using docker compose
+## 5. Run all (kafka, bridge, gps_processing, command-sender) using docker compose
 ```
 docker compose up --build -d
 docker compose logs -f bridge
@@ -70,7 +70,28 @@ To test commandSender Api:
 curl -X POST "http://localhost:8082/api/sendCommand?command=s"
 ```
 
-# 6. To create java keystore
+## 6. To query timescaledb using docker:
+Connect to timescale db using postgreSQL
+docker run -it --rm --network host postgres psql -h localhost -U postgres -d gps
+
+List all tables in the db:
+\dt
+
+Query the gps_data table:
+SELECT * FROM gps_data;
+
+## 7. grafana
+docker run -d -p 3005:3005 --name=grafana grafana/grafana
+Host URL: timescaledb:5432
+Database Name: gps
+Username: postgres
+Password: password
+TLS/SSL Mode: disable
+
+Access Grafana:
+Open your browser and go to http://localhost:3005
+Login with the default credentials (admin/admin)
+## 8. To create java keystore
 https://github.com/aws/aws-iot-device-sdk-java
 
 In the directory where we keep the certifcate enter:
@@ -84,5 +105,5 @@ keytool -importkeystore -srckeystore p12_keystore -srcstoretype PKCS12 -srcstore
 ```
 
 
-<!-- sudo rm -rf ~/go/pkg/mod -->
+
 

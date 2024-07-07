@@ -1,15 +1,24 @@
-version: '3.8'
 # Define common environment variables using an anchor.
 x-common-variables: &common-variables
+  # kafka and mqtt env
   KAFKA_BOOTSTRAP_SERVERS: kafka:29092
   TOPIC_MQTT_SENSOR: topic/sensor
   TOPIC_KAFKA_SENSOR: topic-sensor
   TOPIC_MQTT_CMD: topic/cmd
   TOPIC_KAFKA_CMD: topic-cmd
 
+  # DB env
+  POSTGRES_DB_URL: jdbc:postgresql://timescaledb:5432/gps
+  POSTGRES_DB: gps
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: password
+  POSTGRES_PORT: 5432
+  POSTGRES_HOST: timescaledb
+
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -25,6 +34,7 @@ services:
   # 9092: This port is mapped to the host, allowing you to access Kafka from your host machine.
   kafka:
     image: confluentinc/cp-kafka:latest
+    container_name: kafka
     depends_on:
       - zookeeper
     ports:
@@ -50,14 +60,11 @@ services:
 
   # Initialize Kafka topic.
   init-kafka:
+    container_name: init-kafka
     image: confluentinc/cp-kafka:latest
     depends_on:
       - kafka
     entrypoint: [ '/bin/sh', '-c' ]
-
-    # TODO: add env to take in kafka 29092
-    # environment:
-    # Run bash
     command: |
       "
       # blocks until kafka is reachable
@@ -70,7 +77,35 @@ services:
       echo -e 'Successfully created the following topics:'
       kafka-topics --bootstrap-server kafka:29092 --list
       "
-  
+
+  timescaledb:
+    image: timescale/timescaledb-ha:pg16
+    container_name: timescaledb
+    ports:
+      - "5432:5432"
+    environment:
+      <<: *common-variables
+    volumes:
+      - timescaledb-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Initialize gps db in timescale
+  init-timescaledb:
+    image: postgres:latest
+    container_name: init-timescaledb
+    environment:
+      <<: *common-variables
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+    volumes:
+      - ./scripts:/scripts
+    entrypoint: [ "/bin/bash", "/scripts/init_timescaledb.sh" ]
+
   bridge:
     build: ./bridge
     container_name: bridge
@@ -81,6 +116,8 @@ services:
       JAVA_HOME: /docker-java-home
     depends_on:
       kafka:
+        condition: service_healthy
+      timescaledb:
         condition: service_healthy
     # Run the application with the lib directory added to class path.
     command: java -cp target/bridge-app-1.0-SNAPSHOT.jar:target/lib/\* bridge.Bridge
@@ -96,7 +133,8 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
-    # Run the application with the lib directory added to class path.
+      timescaledb:
+        condition: service_healthy
     command: java -cp target/gpsProcessing-1.0-SNAPSHOT.jar:target/lib/\* gpsProcessing.Main
     
   command-sender:
@@ -112,17 +150,20 @@ services:
         condition: service_healthy
     # Run the application with the lib directory added to class path.
     command: java -cp target/commandSender-1.0-SNAPSHOT.jar:target/lib/\* commandSender.CommandSenderApplication
-    
-  # gps-processing-go:
-  #   build: ./gps_processing_go
-  #   container_name: gps-processing-go
-  #   ports:
-  #     - "8083:8083"
-  #   depends_on:
-  #     kafka:
-  #       condition: service_healthy
-  #   command: ["./gps_processing_go"]
-
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+    networks:
+      - default
 volumes:
   zookeeper-data:
   kafka-data:
+  timescaledb-data:
