@@ -2,9 +2,6 @@
 import React from 'react';
 
 const Home: React.FC = () => {
-  const handleButtonClick = (direction: string) => {
-    console.log(direction); // Replace with your function to handle the command
-  };
 
   return (
     <div>

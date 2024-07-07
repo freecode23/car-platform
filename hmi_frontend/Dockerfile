@@ -1,6 +1,7 @@
-# Stage 1: Build the app
-FROM node:18-alpine AS builder
+# Use an official Node runtime as a parent image
+FROM node:18-alpine as builder
 
+# Set the working directory
 WORKDIR /app
 
 # Copy package.json and package-lock.json
@@ -12,16 +13,23 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
+# Copy the .env file
+COPY .env .env
+
 # Build the Next.js app
 RUN npm run build
 
 # Stage 2: Serve the app
 FROM node:18-alpine
 
+# Set the working directory
 WORKDIR /app
 
 # Copy the build output from the builder stage
 COPY --from=builder /app ./
+
+# Copy the .env file
+COPY .env .env
 
 # Install only production dependencies
 RUN npm install --only=production

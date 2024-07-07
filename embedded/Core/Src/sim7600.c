@@ -127,6 +127,7 @@ void sim_mqtt_gps_init(void) {
 	sprintf(at_cmd, "%s\r\n", topic_cmd);
 	send_AT_cmd(at_cmd);
 	send_AT_cmd("AT+CMQTTSUB=0\r\n");
+	// TODO: if this is OK, send status topic.
 
 	// 9. GPS
 	send_AT_cmd("AT+CGPS=0\r\n");
