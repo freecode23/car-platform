@@ -1,19 +1,20 @@
 # Define common environment variables using an anchor.
 x-common-variables: &common-variables
-  # kafka and mqtt env
+  # Kafka and mqtt environments.
   KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-  TOPIC_MQTT_SENSOR: topic/sensor
-  TOPIC_KAFKA_SENSOR: topic-sensor
   TOPIC_MQTT_CMD: topic/cmd
+  TOPIC_MQTT_SENSOR: topic/sensor
   TOPIC_KAFKA_CMD: topic-cmd
+  TOPIC_KAFKA_SENSOR: topic-sensor
 
-  # DB env
+  # DB environments.
   POSTGRES_DB_URL: jdbc:postgresql://timescaledb:5432/gps
   POSTGRES_DB: gps
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: password
   POSTGRES_PORT: 5432
   POSTGRES_HOST: timescaledb
+
 
 services:
   zookeeper:
@@ -93,7 +94,7 @@ services:
       timeout: 5s
       retries: 5
 
-  # Initialize gps db in timescale
+  # Initialize gps in timescaleDB.
   init-timescaledb:
     image: postgres:latest
     container_name: init-timescaledb

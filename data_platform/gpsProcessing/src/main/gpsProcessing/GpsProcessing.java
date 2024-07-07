@@ -38,10 +38,6 @@ public class GpsProcessing {
         
         // Establish TimescaleDB database connection.
         try {
-            // String dbUrl = System.getenv("POSTGRES_DB_URL");
-            // String dbUser = System.getenv("POSTGRES_USER");
-            // String dbPassword = System.getenv("POSTGRES_PASSWORD");
-            // connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
             Properties dbProperties = new Properties();
             dbProperties.setProperty("user", System.getenv("POSTGRES_USER"));
             dbProperties.setProperty("password", System.getenv("POSTGRES_PASSWORD"));
@@ -76,21 +72,21 @@ public class GpsProcessing {
             return;
         }
 
-        // Extract time, latitude, and longitude
+        // Extract time, latitude, and longitude.
         String time = parts[1];
         String rawLatitude = parts[2];
         String latitudeDirection = parts[3];
         String rawLongitude = parts[4];
         String longitudeDirection = parts[5];
 
-        // Convert raw latitude and longitude to decimal degrees
+        // Convert raw latitude and longitude to decimal degrees.
         double latitude = convertToDecimalDegrees(rawLatitude, latitudeDirection);
         double longitude = convertToDecimalDegrees(rawLongitude, longitudeDirection);
 
-        // Convert time to ISO 8601 format
+        // Convert time to ISO 8601 format.
         IsoAndUnixTime isoAndUnixTime = convertToIso8601AndUnixTime(time);
         
-        // Insert data into TimescaleDB
+        // Insert data into TimescaleDB.
         insertGpsData(isoAndUnixTime.isoTime, isoAndUnixTime.unixTime, latitude, longitude);
         System.out.println("\nTime: " + isoAndUnixTime.isoTime + ", "+ isoAndUnixTime.unixTime + ", Lat: " + latitude + ", Long: " + longitude);
     }
@@ -110,9 +106,8 @@ public class GpsProcessing {
         String minutes = rawTime.substring(2, 4);
         String seconds = rawTime.substring(4, 6);
 
-        // Get today's date
+        // Create LocalDateTime with today's date and extracted time.
         LocalDate today = LocalDate.now();
-        // Create LocalDateTime with today's date and extracted time
         LocalDateTime dateTime = LocalDateTime.of(
             today.getYear(), today.getMonth(), today.getDayOfMonth(), 
             Integer.parseInt(hours), 
@@ -120,11 +115,11 @@ public class GpsProcessing {
             Integer.parseInt(seconds)
         );
 
-        // Format to ISO 8601
+        // Format to ISO 8601.
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
         String isoTime = dateTime.format(formatter);
 
-        // Convert to Unix timestamp in seconds
+        // Convert to Unix timestamp in seconds.
         long unixTime = dateTime.toEpochSecond(ZoneOffset.UTC);
 
         IsoAndUnixTime time = new IsoAndUnixTime();

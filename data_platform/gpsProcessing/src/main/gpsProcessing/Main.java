@@ -2,8 +2,7 @@ package gpsProcessing;
 
 public class Main {
     public static void main(String[] args) {
-        // Docker run:
-        // Read environment variable
+        // Read environment variable.
         String bootstrapServers = System.getenv("KAFKA_BOOTSTRAP_SERVERS");
         if (bootstrapServers == null) {
             throw new IllegalStateException("KAFKA_BOOTSTRAP_SERVERS environment variable is not set");
@@ -17,7 +16,7 @@ public class Main {
 
         String consumerGroup = "gps-consumer-group-java";
 
-        // Create and start Kafka consumer
+        // Create and start Kafka consumer.
         GpsProcessing gpsProcessing = new GpsProcessing(bootstrapServers, topicSubscribe, consumerGroup);
         gpsProcessing.consumeKafkaMessage();
     }
