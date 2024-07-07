@@ -28,17 +28,17 @@ public class SensorMqttTopic extends AWSIotTopic {
     @Override
     public void onMessage(AWSIotMessage message) {
         String payload = message.getStringPayload();
-        System.out.println("Received message: " + payload);
 
         // Forward to Kafka
         ProducerRecord<String, String> record = new ProducerRecord<>(KAFKA_TOPIC, payload);
         kafkaProducer.send(record, (RecordMetadata metadata, Exception exception) -> {
             if (exception != null) {
                 exception.printStackTrace();
-            } else {
-                System.out.printf("Sent record to topic %s partition %d offset %d%n",
-                        metadata.topic(), metadata.partition(), metadata.offset());
-            }
+            } 
+            // else {
+            //     System.out.printf("Sent record to topic %s partition %d offset %d%n",
+            //             metadata.topic(), metadata.partition(), metadata.offset());
+            // }
         });
     }
 }

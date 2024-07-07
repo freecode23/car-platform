@@ -19,6 +19,6 @@ public class Main {
 
         // Create and start Kafka consumer
         GpsProcessing gpsProcessing = new GpsProcessing(bootstrapServers, topicSubscribe, consumerGroup);
-        gpsProcessing.startConsuming();
+        gpsProcessing.consumeKafkaMessage();
     }
 }

@@ -42,7 +42,7 @@ const ControlPad: React.FC = () => {
         <div className="control-pad">
             <div className="control-button up" onClick={() => sendCommand(FORWARD_KEY)}>▲</div>
             <div className="control-button left" onClick={() => sendCommand(LEFT_KEY)}>◀</div>
-            <div className="control-button stop" onClick={() => sendCommand(STOP_KEY)}>OK</div>
+            <div className="control-button stop" onClick={() => sendCommand(STOP_KEY)}>stop</div>
             <div className="control-button right" onClick={() => sendCommand(RIGHT_KEY)}>▶</div>
             <div className="control-button down" onClick={() => sendCommand(BACKWARD_KEY)}>▼</div>
         </div>
