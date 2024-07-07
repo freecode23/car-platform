@@ -5,16 +5,24 @@ https://medium.com/@kellerhalssamuel/simcom7600-and-aws-iot-core-integration-gui
 
 # 2. Run Kafka Locally
 Run zoo keeper:
+```
 bin/zookeeper-server-start.sh config/zookeeper.properties
+```
 
 Run kafka:
+```
 bin/kafka-server-start.sh config/server.properties
+```
 
 Create a kafka topic in kafka directory:
+```
 bin/kafka-topics.sh --create --topic topic-sensor --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+```
 
 Use the Kafka Console Consumer to Read Messages from the Topic
+```
 bin/kafka-console-consumer.sh --topic topic-sensor --bootstrap-server localhost:9092 --from-beginning
+```
 
 # 3. Run just the Java bridge app:
 ## 3.1 Locally
@@ -24,29 +32,43 @@ java -cp target/bridge-app-1.0-SNAPSHOT.jar:target/lib/\* bridge.Bridge
 
 ## 3.2 Docker 
 Build and run the container:
+```
 docker build -t bridge-app .
 docker run -it --rm bridge-app
+```
 
 Then run the app:
+```
 java -cp target/bridge-app-1.0-SNAPSHOT.jar:target/lib/\* bridge.Bridge
-
+```
 
 # 4. Run just the gps-processing app app:
 Build and run the container:
 docker compose up --build -t gps-processing-go
 
 # 5. Run all (kafka, bridge, gps_processing, command-sender) using docker compose
+```
 docker compose up --build -d
 docker compose logs -f bridge
 docker compose logs -f command-sender
 docker compose logs -f gps-processing
+```
 
 Check if Kafka receives the message:
+```
 docker exec -it car_platform-kafka-1 /bin/sh
 kafka-console-consumer --bootstrap-server localhost:9092 --topic topic-sensor --from-beginning
+```
 
 To clean up docker:
+```
 docker system prune -a
+```
+
+To test commandSender Api:
+```
+curl -X POST "http://localhost:8082/api/sendCommand?command=s"
+```
 
 # 6. To create java keystore
 https://github.com/aws/aws-iot-device-sdk-java

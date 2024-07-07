@@ -1,0 +1,68 @@
+.control-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70vh; /* Full viewport height to center vertically */
+}
+
+.control-pad {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  height: 200px;
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  padding: 20px;
+  position: relative;
+  border: 1px solid #c2c1c1; /* Border for the OK button */
+
+}
+
+.control-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  margin: 5px;
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #37383d;
+}
+
+.control-button.stop {
+  width: 110px;
+  height: 110px;
+  background-color: #fff;
+  border: 1px solid #c2c1c1; /* Border for the OK button */
+}
+
+.control-button.up {
+  position: absolute;
+  top: 5px;
+}
+
+.control-button.down {
+  position: absolute;
+  bottom: 5px;
+}
+
+.control-button.left {
+  position: absolute;
+  left: 5px;
+}
+
+.control-button.right {
+  position: absolute;
+  right: 5px;
+}
