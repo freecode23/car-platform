@@ -1,7 +1,11 @@
 # Resque-Car
 
 **Resque-Car** is an IoT-based car platform designed to provide various functionalities such as remote control, sensor data processing, and command communication using Kafka and MQTT.
+## Demo Video
 
+[![Watch the video](https://img.youtube.com/vi/uxNhugrdJTQ/hqdefault.jpg)](https://youtube.com/shorts/uxNhugrdJTQ?si=6FDtoz9iUgr_UjPq)
+
+Click the image above to watch the demo video.
 ## Table of Contents
 
 - [Introduction](#introduction)
