@@ -1,52 +1,34 @@
+# Data Platform for Resque-Car
 
-## 1. Set up AWS and load certificates to SIM module.
-https://medium.com/@kellerhalssamuel/simcom7600-and-aws-iot-core-integration-guide-ceb7ff485289
+This directory contains the data platform microservices for the Resque-Car project. These services handle data processing, communication, and storage. Each service is containerized using Docker and can be managed using Docker Compose.
 
+## Overview
 
-## 2. Run Kafka locally.
-Run zoo keeper:
-```
-bin/zookeeper-server-start.sh config/zookeeper.properties
-```
+The Resque-Car project is designed to test controlling a fleet of cars in disaster-stricken areas where Wi-Fi communication is impossible. The project features real-time GPS data processing, command communication, and data visualization. Each of the rectangular shapes in the architecture diagram represents a microservice running in a Docker container.
 
-Run kafka:
-```
-bin/kafka-server-start.sh config/server.properties
-```
+## Services
 
-Create a kafka topic in kafka directory:
-```
-bin/kafka-topics.sh --create --topic topic-sensor --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
-```
+### Bridge
 
-Use the Kafka Console Consumer to Read Messages from the Topic
-```
-bin/kafka-console-consumer.sh --topic topic-sensor --bootstrap-server localhost:9092 --from-beginning
-```
+Handles the communication between Kafka and MQTT brokers. It consumes messages from Kafka and publishes them to MQTT, and vice versa.
 
-## 3. Run just the Java bridge app
-### 3.1 Locally
-Note that if you just run bridge app locally without running kafka,
-it will not be able to pass message to kafka broker.
-java -cp target/bridge-app-1.0-SNAPSHOT.jar:target/lib/\* bridge.Bridge
+### Command Sender
 
-### 3.2 Docker 
-Build and run the container:
-```
-docker build -t bridge-app .
-docker run -it --rm bridge-app
-```
+Receives commands via an API and sends them to Kafka.
 
-Then run the app:
-```
-java -cp target/bridge-app-1.0-SNAPSHOT.jar:target/lib/\* bridge.Bridge
-```
+### GPS Processing
 
-## 4. Run just the gps-processing app app.
-Build and run the container:
-docker compose up --build -t gps-processing-go
+Consumes GPS data from Kafka, processes it, and stores it in TimescaleDB.
 
-## 5. Run all containers using docker compose.
+### TimescaleDB
+
+Stores the GPS data in a time-series database.
+
+### Grafana
+
+Used for visualizing the GPS data stored in TimescaleDB.
+
+## 1. Run all containers using docker compose.
 ```
 docker compose up --build -d
 docker compose logs -f bridge
@@ -60,7 +42,7 @@ docker exec -it car_platform-kafka-1 /bin/sh
 kafka-console-consumer --bootstrap-server localhost:9092 --topic topic-sensor --from-beginning
 ```
 
-## 6. Query timescaledb using docker.
+## 2. Query timescaledb using docker.
 Connect to timescale db using postgreSQL:
 ```
 docker run -it --rm --network host postgres psql -h localhost -U postgres -d gps
@@ -72,7 +54,7 @@ List all tables in the db:
 Query the gps_data table:
 SELECT * FROM gps_data;
 
-## 7. Run Grafana to query the timescaleDB.
+## 3. Run Grafana to query the timescaleDB.
 docker run -d -p 3005:3005 --name=grafana grafana/grafana
 Host URL: timescaledb:5432
 Database Name: gps
@@ -84,7 +66,7 @@ Access Grafana:
 Open your browser and go to http://localhost:3000
 Login with the default credentials (admin/admin)
 
-## 8. To create java keystore for AWS IoT connection.
+## Make sure to create java keystore for AWS IoT connection.
 https://github.com/aws/aws-iot-device-sdk-java
 
 In the directory where we keep the certifcate enter:
@@ -96,7 +78,3 @@ Use the password that we entered above here:
 ```
 keytool -importkeystore -srckeystore p12_keystore -srcstoretype PKCS12 -srcstorepass <password> -alias alias -deststorepass <password> -destkeypass <password> -destkeystore my_keystore
 ```
-
-
-
-
