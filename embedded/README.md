@@ -1,7 +1,8 @@
 # Embedded Module
-![Uploading Screenshot 2024-07-07 at 7.25.16 PM.png…]()
 
 This module is responsible for handling the communication and control logic for the IoT-based car in the Resque-Car project. The embedded module runs on an STM32 microcontroller and interfaces with various peripherals, including a SIM7600 module for MQTT communication and a GPS module.
+
+<img width="523" alt="Screenshot 2024-07-07 at 7 25 16 PM" src="https://github.com/freecode23/resque-car/assets/67333705/7c7c8172-00aa-40e8-b047-8fcd0ad3d6da">
 
 ## Table of Contents
 
