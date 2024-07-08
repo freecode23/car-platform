@@ -59,7 +59,7 @@ This directory contains the backend services and data processing modules. It inc
 
 ### embedded/
 
-This directory includes the firmware and embedded code running on the IoT car. It handles the direct interaction with the car's hardware components, such as sensors and actuators. This code is responsible for sending sensor data and executing received commands.
+This directory includes the firmware and embedded code running on the IoT car. It handles the direct interaction with the car's hardware components, such as sensors, actuators, and the SIM7600 LTE module. The SIM7600 LTE module is used for communication with MQTT and AWS IoT Core, sending messages to the STM32 and receiving messages from the STM32 via UART to transmit to the IoT Core. This code is responsible for sending sensor data and executing received commands.
 
 ### hmi_frontend/
 
